@@ -1,0 +1,70 @@
+<!-- Statistics Section -->
+{{if .Statistics}}
+<div class="stats-grid">
+    {{range $currency, $stat := .Statistics}}
+    <div class="stat-card">
+        <h3>{{$currency}}</h3>
+
+        <div style="margin-bottom: 15px;">
+            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">📈 BASIC STATISTICS</h4>
+            <div class="stat-row">
+                <span class="stat-label">Minimum</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Basic.Min}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Maximum</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Basic.Max}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Average</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Basic.Average}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Median</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Basic.Median}}</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">📊 VOLATILITY</h4>
+            <div class="stat-row">
+                <span class="stat-label">Std Deviation</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Volatility.StdDev}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Variance</span>
+                <span class="stat-value">{{printf "%.6f" $stat.Volatility.Variance}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Coefficient of Var</span>
+                <span class="stat-value">{{printf "%.2f" $stat.Volatility.CoefficientOfVar}}%</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Avg Daily Return</span>
+                <span class="stat-value">{{printf "%.4f" $stat.Volatility.AvgDailyReturn}}%</span>
+            </div>
+        </div>
+
+        <div>
+            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">📉 TREND</h4>
+            <div class="stat-row">
+                <span class="stat-label">Direction</span>
+                <span class="stat-value">{{$stat.Trend.Direction}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Slope</span>
+                <span class="stat-value">{{printf "%.6f" $stat.Trend.Slope}}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Total Change</span>
+                <span class="stat-value">{{printf "%.2f" $stat.Trend.PercentChange}}%</span>
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>
+{{end}}
+
+<div class="footer">
+    <small>Data source: Frankfurter API (European Central Bank)</small>
+</div>
