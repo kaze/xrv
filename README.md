@@ -1,4 +1,4 @@
-# XRV - Exchange Rate Visualizer 📊
+# XRV - eXchange Rate Visualizer 📊
 
 A powerful Go-based CLI application for visualizing historical exchange rates with beautiful terminal charts and comprehensive statistical analysis.
 
