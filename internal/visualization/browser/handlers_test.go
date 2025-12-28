@@ -226,3 +226,123 @@ func TestInvertRates_Function(t *testing.T) {
 		t.Errorf("Inverted rate = %f, want %f", invertedRate, expected)
 	}
 }
+
+func TestHandleExportCSV(t *testing.T) {
+	mockAPI := &mockAPIClient{
+		timeSeriesResponse: &api.TimeSeriesResponse{
+			Base:      "USD",
+			StartDate: "2024-01-01",
+			EndDate:   "2024-01-02",
+			Rates: map[string]map[string]float64{
+				"2024-01-01": {"EUR": 0.85, "GBP": 0.75},
+				"2024-01-02": {"EUR": 0.86, "GBP": 0.76},
+			},
+		},
+	}
+
+	memCache := cache.NewMemoryCache()
+	defer memCache.Close()
+
+	svc := service.NewService(mockAPI, memCache)
+	handlers := NewHandlers(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/export/csv?base=USD&currencies=EUR,GBP&from=2024-01-01&to=2024-01-02", nil)
+	w := httptest.NewRecorder()
+
+	handlers.HandleExportCSV(w, req)
+
+	resp := w.Result()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Status = %d, want %d", resp.StatusCode, http.StatusOK)
+	}
+
+	contentType := resp.Header.Get("Content-Type")
+	if contentType != "text/csv" {
+		t.Errorf("Content-Type = %s, want text/csv", contentType)
+	}
+
+	contentDisposition := resp.Header.Get("Content-Disposition")
+	if !contains(contentDisposition, "attachment") || !contains(contentDisposition, ".csv") {
+		t.Errorf("Content-Disposition = %s, want attachment with .csv filename", contentDisposition)
+	}
+
+	body := w.Body.String()
+	if len(body) == 0 {
+		t.Error("Expected non-empty CSV data")
+	}
+
+	if !contains(body, "Date") || !contains(body, "EUR") || !contains(body, "GBP") {
+		t.Error("Expected CSV header with Date and currency columns")
+	}
+
+	if !contains(body, "2024-01-01") {
+		t.Error("Expected date in CSV data")
+	}
+}
+
+func TestHandleExportJSON(t *testing.T) {
+	mockAPI := &mockAPIClient{
+		timeSeriesResponse: &api.TimeSeriesResponse{
+			Base:      "USD",
+			StartDate: "2024-01-01",
+			EndDate:   "2024-01-02",
+			Rates: map[string]map[string]float64{
+				"2024-01-01": {"EUR": 0.85},
+				"2024-01-02": {"EUR": 0.86},
+			},
+		},
+	}
+
+	memCache := cache.NewMemoryCache()
+	defer memCache.Close()
+
+	svc := service.NewService(mockAPI, memCache)
+	handlers := NewHandlers(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/export/json?base=USD&currencies=EUR&from=2024-01-01&to=2024-01-02", nil)
+	w := httptest.NewRecorder()
+
+	handlers.HandleExportJSON(w, req)
+
+	resp := w.Result()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Status = %d, want %d", resp.StatusCode, http.StatusOK)
+	}
+
+	contentType := resp.Header.Get("Content-Type")
+	if contentType != "application/json" {
+		t.Errorf("Content-Type = %s, want application/json", contentType)
+	}
+
+	contentDisposition := resp.Header.Get("Content-Disposition")
+	if !contains(contentDisposition, "attachment") || !contains(contentDisposition, ".json") {
+		t.Errorf("Content-Disposition = %s, want attachment with .json filename", contentDisposition)
+	}
+
+	body := w.Body.String()
+	if len(body) == 0 {
+		t.Error("Expected non-empty JSON data")
+	}
+
+	if !contains(body, "base") || !contains(body, "data") || !contains(body, "statistics") {
+		t.Error("Expected JSON with base, data, and statistics fields")
+	}
+}
+
+func TestHandleExportCSV_MissingParams(t *testing.T) {
+	memCache := cache.NewMemoryCache()
+	defer memCache.Close()
+
+	svc := service.NewService(&mockAPIClient{}, memCache)
+	handlers := NewHandlers(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/export/csv", nil)
+	w := httptest.NewRecorder()
+
+	handlers.HandleExportCSV(w, req)
+
+	resp := w.Result()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Status = %d, want %d", resp.StatusCode, http.StatusBadRequest)
+	}
+}

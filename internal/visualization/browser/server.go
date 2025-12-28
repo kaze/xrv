@@ -59,6 +59,8 @@ func (s *Server) Start() error {
 	http.HandleFunc("/currencies", s.handleCurrencies)
 	http.HandleFunc("/htmx/chart", handlers.HandleChartUpdate)
 	http.HandleFunc("/htmx/statistics", handlers.HandleStatisticsRefresh)
+	http.HandleFunc("/export/csv", handlers.HandleExportCSV)
+	http.HandleFunc("/export/json", handlers.HandleExportJSON)
 
 	url := fmt.Sprintf("http://localhost:%d", s.port)
 	fmt.Printf("\nStarting interactive browser visualization server...\n")

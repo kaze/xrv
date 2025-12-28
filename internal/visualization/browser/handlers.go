@@ -202,3 +202,162 @@ func invertRates(data *domain.TimeSeriesData) *domain.TimeSeriesData {
 
 	return inverted
 }
+
+func (h *Handlers) HandleExportCSV(w http.ResponseWriter, r *http.Request) {
+	base := r.URL.Query().Get("base")
+	if base == "" {
+		base = "USD"
+	}
+
+	currenciesStr := r.URL.Query().Get("currencies")
+	if currenciesStr == "" {
+		http.Error(w, "Currencies required", http.StatusBadRequest)
+		return
+	}
+
+	from := r.URL.Query().Get("from")
+	to := r.URL.Query().Get("to")
+
+	startDate, err := time.Parse("2006-01-02", from)
+	if err != nil {
+		http.Error(w, "Invalid start date", http.StatusBadRequest)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", to)
+	if err != nil {
+		http.Error(w, "Invalid end date", http.StatusBadRequest)
+		return
+	}
+
+	targets := strings.Split(currenciesStr, ",")
+	targetCurrencies := make([]domain.Currency, 0, len(targets))
+	for _, t := range targets {
+		trimmed := strings.TrimSpace(t)
+		if trimmed != "" {
+			targetCurrencies = append(targetCurrencies, domain.Currency(trimmed))
+		}
+	}
+
+	ctx := context.Background()
+	data, err := h.svc.FetchTimeSeriesData(ctx, service.FetchOptions{
+		Base:      domain.Currency(base),
+		Targets:   targetCurrencies,
+		StartDate: startDate,
+		EndDate:   endDate,
+		UseCache:  true,
+	})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	filename := fmt.Sprintf("xrv-data-%s-%s.csv", 
+		startDate.Format("2006-01-02"), 
+		endDate.Format("2006-01-02"))
+
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
+
+	w.Write([]byte("Date"))
+	for _, currency := range data.Targets {
+		w.Write([]byte(fmt.Sprintf(",%s", currency)))
+	}
+	w.Write([]byte("\n"))
+
+	for _, dp := range data.DataPoints {
+		w.Write([]byte(dp.Date.Format("2006-01-02")))
+		for _, currency := range data.Targets {
+			if rate, exists := dp.Rates[currency]; exists {
+				w.Write([]byte(fmt.Sprintf(",%.6f", rate)))
+			} else {
+				w.Write([]byte(","))
+			}
+		}
+		w.Write([]byte("\n"))
+	}
+}
+
+func (h *Handlers) HandleExportJSON(w http.ResponseWriter, r *http.Request) {
+	base := r.URL.Query().Get("base")
+	if base == "" {
+		base = "USD"
+	}
+
+	currenciesStr := r.URL.Query().Get("currencies")
+	if currenciesStr == "" {
+		http.Error(w, "Currencies required", http.StatusBadRequest)
+		return
+	}
+
+	from := r.URL.Query().Get("from")
+	to := r.URL.Query().Get("to")
+
+	startDate, err := time.Parse("2006-01-02", from)
+	if err != nil {
+		http.Error(w, "Invalid start date", http.StatusBadRequest)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", to)
+	if err != nil {
+		http.Error(w, "Invalid end date", http.StatusBadRequest)
+		return
+	}
+
+	targets := strings.Split(currenciesStr, ",")
+	targetCurrencies := make([]domain.Currency, 0, len(targets))
+	for _, t := range targets {
+		trimmed := strings.TrimSpace(t)
+		if trimmed != "" {
+			targetCurrencies = append(targetCurrencies, domain.Currency(trimmed))
+		}
+	}
+
+	ctx := context.Background()
+	data, err := h.svc.FetchTimeSeriesData(ctx, service.FetchOptions{
+		Base:      domain.Currency(base),
+		Targets:   targetCurrencies,
+		StartDate: startDate,
+		EndDate:   endDate,
+		UseCache:  true,
+	})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	stats := h.svc.CalculateStatistics(data)
+
+	type ExportData struct {
+		Base       string                             `json:"base"`
+		Targets    []string                           `json:"targets"`
+		StartDate  string                             `json:"start_date"`
+		EndDate    string                             `json:"end_date"`
+		Data       []domain.DataPoint                 `json:"data"`
+		Statistics map[string]statistics.Statistics   `json:"statistics"`
+	}
+
+	targets_str := make([]string, len(data.Targets))
+	for i, t := range data.Targets {
+		targets_str[i] = string(t)
+	}
+
+	exportData := ExportData{
+		Base:       string(data.Base),
+		Targets:    targets_str,
+		StartDate:  data.StartDate.Format("2006-01-02"),
+		EndDate:    data.EndDate.Format("2006-01-02"),
+		Data:       data.DataPoints,
+		Statistics: stats,
+	}
+
+	filename := fmt.Sprintf("xrv-data-%s-%s.json", 
+		startDate.Format("2006-01-02"), 
+		endDate.Format("2006-01-02"))
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
+
+	json.NewEncoder(w).Encode(exportData)
+}
