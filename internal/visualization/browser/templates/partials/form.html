@@ -16,10 +16,15 @@
 
             <div class="form-group">
                 <label for="currencies">Target Currencies</label>
-                <select id="currencies" name="currencies" multiple required size="8">
-                    <option value="">Loading currencies...</option>
-                </select>
-                <div class="hint">Hold Ctrl/Cmd to select multiple</div>
+                <div class="custom-multi-select" id="currenciesSelectContainer">
+                    <div class="multi-select-display" id="currenciesDisplay">
+                        <span class="multi-select-placeholder">Loading currencies...</span>
+                        <span class="multi-select-arrow">▼</span>
+                    </div>
+                    <div class="multi-select-dropdown" id="currenciesDropdown"></div>
+                </div>
+                <input type="hidden" id="currencies" name="currencies" required>
+                <div class="hint">Click to select multiple currencies</div>
             </div>
 
             <div class="form-group">
@@ -34,7 +39,7 @@
         </div>
 
         <div class="checkbox-group">
-            <input type="checkbox" id="invert" name="invert" value="true">
+            <input type="checkbox" id="invert" name="invert" value="true" checked>
             <label for="invert">Invert rates (show base currency value in target currencies)</label>
         </div>
 

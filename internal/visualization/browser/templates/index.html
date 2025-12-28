@@ -18,11 +18,10 @@
 
 <script>
     const today = new Date();
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(today.getDate() - 90);
+    const startDate = new Date('2015-06-29');
 
     document.getElementById('to').valueAsDate = today;
-    document.getElementById('from').valueAsDate = ninetyDaysAgo;
+    document.getElementById('from').valueAsDate = startDate;
 
     window.addEventListener('load', function() {
         document.getElementById('vizForm').dispatchEvent(new Event('submit'));
