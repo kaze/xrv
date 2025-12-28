@@ -101,8 +101,8 @@ func TestServer_HandleVisualize(t *testing.T) {
 	if !contains(body, "echarts") {
 		t.Error("Expected echarts library in response")
 	}
-	if !contains(body, "echarts.init") {
-		t.Error("Expected echarts initialization in response")
+	if !contains(body, "initializeChart") {
+		t.Error("Expected chart initialization in response")
 	}
 	if !contains(body, "stats-grid") {
 		t.Error("Expected statistics section in response")

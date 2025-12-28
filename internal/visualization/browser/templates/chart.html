@@ -1,5 +1,14 @@
 {{define "chart"}}
 <div id="chartCanvas" style="width: 100%; height: 600px;"></div>
 
+<script>
+(function() {
+    var config = {{.ChartConfigJSON}};
+    if (window.initializeChart && config) {
+        window.initializeChart('chartCanvas', config);
+    }
+})();
+</script>
+
 {{template "statistics" .}}
 {{end}}

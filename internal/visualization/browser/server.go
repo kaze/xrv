@@ -2,6 +2,7 @@ package browser
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"math"
@@ -14,6 +15,7 @@ import (
 	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/domain"
 	"github.com/kaze/xrv/internal/service"
+	"github.com/kaze/xrv/internal/statistics"
 )
 
 var templates *template.Template
@@ -120,8 +122,28 @@ func (s *Server) handleVisualize(w http.ResponseWriter, r *http.Request) {
 
 	stats := s.svc.CalculateStatistics(data)
 
-	renderer := NewRenderer(s.port)
-	renderer.renderChartOnly(w, data, stats)
+	config, err := TransformToEChartsConfig(data, stats)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to transform data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	configJSON, err := json.Marshal(config)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to marshal config: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	type TemplateData struct {
+		ChartConfigJSON template.JS
+		Statistics      map[string]statistics.Statistics
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	templates.ExecuteTemplate(w, "chart-page", TemplateData{
+		ChartConfigJSON: template.JS(configJSON),
+		Statistics:      stats,
+	})
 }
 
 func (s *Server) handleCurrencies(w http.ResponseWriter, r *http.Request) {
