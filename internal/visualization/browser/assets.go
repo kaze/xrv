@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 )
 
-//go:embed assets/**/* templates/**/*
+//go:embed assets templates
 var assetsFS embed.FS
 
 func LoadAssets() (http.FileSystem, error) {

@@ -1,0 +1,61 @@
+{{define "stat-card"}}
+<div class="stat-card">
+    <h3>{{.Currency}}</h3>
+
+    <div style="margin-bottom: 15px;">
+        <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">BASIC STATISTICS</h4>
+        <div class="stat-row">
+            <span class="stat-label">Minimum</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Basic.Min}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Maximum</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Basic.Max}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Average</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Basic.Average}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Median</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Basic.Median}}</span>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">VOLATILITY</h4>
+        <div class="stat-row">
+            <span class="stat-label">Std Deviation</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Volatility.StdDev}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Variance</span>
+            <span class="stat-value">{{printf "%.6f" .Stat.Volatility.Variance}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Coefficient of Var</span>
+            <span class="stat-value">{{printf "%.2f" .Stat.Volatility.CoefficientOfVar}}%</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Avg Daily Return</span>
+            <span class="stat-value">{{printf "%.4f" .Stat.Volatility.AvgDailyReturn}}%</span>
+        </div>
+    </div>
+
+    <div>
+        <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">TREND</h4>
+        <div class="stat-row">
+            <span class="stat-label">Direction</span>
+            <span class="stat-value">{{.Stat.Trend.Direction}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Slope</span>
+            <span class="stat-value">{{printf "%.6f" .Stat.Trend.Slope}}</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Total Change</span>
+            <span class="stat-value">{{printf "%.2f" .Stat.Trend.PercentChange}}%</span>
+        </div>
+    </div>
+</div>
+{{end}}

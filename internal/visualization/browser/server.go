@@ -65,7 +65,7 @@ func (s *Server) Start() error {
 
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	templates.ExecuteTemplate(w, "index.html", nil)
+	templates.ExecuteTemplate(w, "base.html", nil)
 }
 
 func (s *Server) handleVisualize(w http.ResponseWriter, r *http.Request) {

@@ -50,7 +50,7 @@ func (r *Renderer) renderChartOnly(w io.Writer, data *domain.TimeSeriesData, sta
 		Statistics map[string]statistics.Statistics
 	}
 
-	templates.ExecuteTemplate(w, "chart.html", TemplateData{
+	templates.ExecuteTemplate(w, "chart", TemplateData{
 		Statistics: stats,
 	})
 }

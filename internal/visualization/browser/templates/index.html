@@ -1,68 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>XRV - Exchange Rate Visualizer</title>
-    <link rel="stylesheet" href="/assets/styles/base.css">
-    <link rel="stylesheet" href="/assets/styles/layout.css">
-    <link rel="stylesheet" href="/assets/styles/forms.css">
-    <link rel="stylesheet" href="/assets/styles/chart.css">
-    <link rel="stylesheet" href="/assets/styles/statistics.css">
-    <link rel="stylesheet" href="/assets/styles/utilities.css">
-</head>
-<body>
-    <div class="container">
-        <h1>XRV</h1>
-        <p class="subtitle">Exchange Rate Visualizer - Interactive Mode</p>
-        <div class="form-section">
-            <form id="vizForm" onsubmit="loadVisualization(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="base">Base Currency</label>
-                        <input type="text" id="base" name="base" value="USD" required>
-                        <div class="hint">Currency to price against</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="currencies">Target Currencies</label>
-                        <input type="text" id="currencies" name="currencies" value="EUR,GBP,JPY" required>
-                        <div class="hint">Comma-separated</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="from">Start Date</label>
-                        <input type="date" id="from" name="from" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="to">End Date</label>
-                        <input type="date" id="to" name="to" required>
-                    </div>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="invert" name="invert" value="true">
-                    <label for="invert">Invert rates (show base currency value in target currencies)</label>
-                </div>
-                <button type="submit" style="margin-top: 20px; width: 100%;">Visualize</button>
-            </form>
-        </div>
-        <iframe id="chartFrame"
-                style="width: 100%; min-height: 900px; border: none; border-radius: 12px; background: white;"
-                title="Exchange Rate Visualization">
-        </iframe>
-    </div>
-    <script>
-        const today = new Date();
-        const ninetyDaysAgo = new Date();
-        ninetyDaysAgo.setDate(today.getDate() - 90);
-        document.getElementById('to').valueAsDate = today;
-        document.getElementById('from').valueAsDate = ninetyDaysAgo;
-        function loadVisualization(event) {
-            event.preventDefault();
-            const form = document.getElementById('vizForm');
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-            document.getElementById('chartFrame').src = '/visualize?' + params.toString();
-        }
-        window.addEventListener('load', function() {
-            document.getElementById('vizForm').dispatchEvent(new Event('submit'));
-        });
-    </script>
-</body>
-</html>
+{{define "content"}}
+<div class="container">
+    <h1>XRV</h1>
+    <p class="subtitle">Exchange Rate Visualizer - Interactive Mode</p>
+
+    {{template "form" .}}
+
+    <iframe id="chartFrame"
+            style="width: 100%; min-height: 900px; border: none; border-radius: 12px; background: white;"
+            title="Exchange Rate Visualization">
+    </iframe>
+</div>
+
+<script>
+    const today = new Date();
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(today.getDate() - 90);
+
+    document.getElementById('to').valueAsDate = today;
+    document.getElementById('from').valueAsDate = ninetyDaysAgo;
+
+    function loadVisualization(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('vizForm');
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+
+        document.getElementById('chartFrame').src = '/visualize?' + params.toString();
+    }
+
+    window.addEventListener('load', function() {
+        document.getElementById('vizForm').dispatchEvent(new Event('submit'));
+    });
+</script>
+{{end}}
