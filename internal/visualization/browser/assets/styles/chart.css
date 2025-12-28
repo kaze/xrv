@@ -20,3 +20,23 @@
     width: 100%;
     min-height: 500px;
 }
+
+#chartCanvas {
+    width: 100%;
+    height: 600px;
+}
+
+#chartContainer {
+    min-height: 600px;
+}
+
+.chart-placeholder {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-primary);
+}
+
+.chart-page-body {
+    margin: 0;
+    padding: 20px;
+}

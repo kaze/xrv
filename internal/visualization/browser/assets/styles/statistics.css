@@ -18,6 +18,19 @@
     font-size: 1.3em;
 }
 
+.stat-section {
+    margin-bottom: 15px;
+}
+
+.stat-section h4 {
+    color: var(--color-primary);
+    font-size: 1em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .stat-row {
     display: flex;
     justify-content: space-between;
@@ -31,9 +44,11 @@
 
 .stat-label {
     color: var(--color-text-light);
+    font-family: inherit;
 }
 
 .stat-value {
     font-weight: 600;
     color: var(--color-text);
+    font-family: inherit;
 }

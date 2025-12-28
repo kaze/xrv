@@ -1,14 +1,14 @@
 {{define "export-buttons"}}
-<div style="margin-top: 20px; padding: 20px; background: #f7fafc; border-radius: 8px;">
-    <h3 style="margin-bottom: 15px; font-size: 1em; color: #667eea;">Export Data</h3>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button type="button" onclick="window.exportChart('csv')" style="flex: 1; min-width: 120px; padding: 10px 20px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+<div class="export-section">
+    <h3>Export Data</h3>
+    <div class="export-buttons">
+        <button type="button" onclick="window.exportChart('csv')" class="export-btn export-btn-csv">
             CSV
         </button>
-        <button type="button" onclick="window.exportChart('json')" style="flex: 1; min-width: 120px; padding: 10px 20px; background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+        <button type="button" onclick="window.exportChart('json')" class="export-btn export-btn-json">
             JSON
         </button>
-        <button type="button" onclick="window.exportChart('image')" style="flex: 1; min-width: 120px; padding: 10px 20px; background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+        <button type="button" onclick="window.exportChart('image')" class="export-btn export-btn-image">
             Image (PNG)
         </button>
     </div>

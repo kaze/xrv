@@ -5,8 +5,8 @@
     <div class="stat-card">
         <h3>{{$currency}}</h3>
 
-        <div style="margin-bottom: 15px;">
-            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">BASIC STATISTICS</h4>
+        <div class="stat-section">
+            <h4>Basic Statistics</h4>
             <div class="stat-row">
                 <span class="stat-label">Minimum</span>
                 <span class="stat-value">{{printf "%.4f" $stat.Basic.Min}}</span>
@@ -25,8 +25,8 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">VOLATILITY</h4>
+        <div class="stat-section">
+            <h4>Volatility</h4>
             <div class="stat-row">
                 <span class="stat-label">Std Deviation</span>
                 <span class="stat-value">{{printf "%.4f" $stat.Volatility.StdDev}}</span>
@@ -45,8 +45,8 @@
             </div>
         </div>
 
-        <div>
-            <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 8px;">TREND</h4>
+        <div class="stat-section">
+            <h4>Trend</h4>
             <div class="stat-row">
                 <span class="stat-label">Direction</span>
                 <span class="stat-value">{{$stat.Trend.Direction}}</span>

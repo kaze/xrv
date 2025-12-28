@@ -20,6 +20,53 @@
     display: block;
 }
 
+.export-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 8px;
+}
+
+.export-section h3 {
+    margin-bottom: 15px;
+    font-size: 1em;
+    color: var(--color-primary);
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.export-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+}
+
+.export-btn-csv {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.export-btn-json {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.export-btn-image {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+}
+
 .footer {
     margin-top: var(--spacing-lg);
     text-align: center;

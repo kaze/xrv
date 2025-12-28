@@ -70,6 +70,11 @@ button:hover {
     box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
+.submit-btn {
+    margin-top: 20px;
+    width: 100%;
+}
+
 .hint {
     color: var(--color-text-light);
     font-size: 0.85em;
