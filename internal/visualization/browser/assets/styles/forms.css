@@ -37,6 +37,21 @@ input:focus, select:focus {
     border-color: var(--color-primary);
 }
 
+select[multiple] {
+    padding: 8px;
+}
+
+select[multiple] option {
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+select[multiple] option:checked {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+}
+
 .checkbox-group {
     display: flex;
     align-items: center;
