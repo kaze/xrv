@@ -46,7 +46,7 @@ func (h *Handlers) HandleChartUpdate(w http.ResponseWriter, r *http.Request) {
 
 	from := r.FormValue("from")
 	to := r.FormValue("to")
-	invert := r.FormValue("invert") == "on"
+	invert := r.FormValue("invert") == "true"
 
 	startDate, err := time.Parse("2006-01-02", from)
 	if err != nil {
