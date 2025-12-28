@@ -1,0 +1,22 @@
+#chartSection {
+    margin-top: var(--spacing-lg);
+    clear: both;
+    width: 100%;
+    display: block;
+}
+
+#chartSection .container {
+    display: block !important;
+    flex-direction: column !important;
+    margin-top: 0 !important;
+}
+
+#chartSection .item {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.chart-container {
+    width: 100%;
+    min-height: 500px;
+}

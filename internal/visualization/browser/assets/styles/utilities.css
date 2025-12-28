@@ -1,0 +1,12 @@
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-light);
+}
+
+.footer {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+    color: var(--color-text-light);
+    font-size: 0.9em;
+}

@@ -2,7 +2,6 @@ package browser
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"html/template"
 	"math"
@@ -17,13 +16,14 @@ import (
 	"github.com/kaze/xrv/internal/service"
 )
 
-//go:embed templates/*
-var templatesFS embed.FS
-
 var templates *template.Template
 
 func init() {
-	templates = template.Must(template.ParseFS(templatesFS, "templates/*.html"))
+	var err error
+	templates, err = GetTemplates()
+	if err != nil {
+		panic(fmt.Sprintf("Failed to load templates: %v", err))
+	}
 }
 
 type Server struct {
@@ -44,13 +44,19 @@ func NewServer(port int, svc *service.Service, apiClient api.APIClient) *Server 
 }
 
 func (s *Server) Start() error {
+	assetFS, err := LoadAssets()
+	if err != nil {
+		return fmt.Errorf("failed to load assets: %w", err)
+	}
+
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(assetFS)))
 	http.HandleFunc("/", s.handleIndex)
 	http.HandleFunc("/visualize", s.handleVisualize)
 	http.HandleFunc("/currencies", s.handleCurrencies)
 
 	url := fmt.Sprintf("http://localhost:%d", s.port)
-	fmt.Printf("\n🌐 Starting interactive browser visualization server...\n")
-	fmt.Printf("📊 Opening %s in your browser\n\n", url)
+	fmt.Printf("\nStarting interactive browser visualization server...\n")
+	fmt.Printf("Opening %s in your browser\n\n", url)
 	fmt.Println("Press Ctrl+C to stop the server")
 
 	go s.openBrowser(url)
