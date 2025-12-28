@@ -51,10 +51,14 @@ func (s *Server) Start() error {
 		return fmt.Errorf("failed to load assets: %w", err)
 	}
 
+	handlers := NewHandlers(s.svc)
+
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(assetFS)))
 	http.HandleFunc("/", s.handleIndex)
 	http.HandleFunc("/visualize", s.handleVisualize)
 	http.HandleFunc("/currencies", s.handleCurrencies)
+	http.HandleFunc("/htmx/chart", handlers.HandleChartUpdate)
+	http.HandleFunc("/htmx/statistics", handlers.HandleStatisticsRefresh)
 
 	url := fmt.Sprintf("http://localhost:%d", s.port)
 	fmt.Printf("\nStarting interactive browser visualization server...\n")

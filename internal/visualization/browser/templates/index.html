@@ -5,10 +5,15 @@
 
     {{template "form" .}}
 
-    <iframe id="chartFrame"
-            style="width: 100%; min-height: 900px; border: none; border-radius: 12px; background: white;"
-            title="Exchange Rate Visualization">
-    </iframe>
+    <div id="loadingSpinner" class="htmx-indicator">
+        <p>Loading visualization...</p>
+    </div>
+
+    <div id="chartContainer" style="min-height: 600px;">
+        <div style="text-align: center; padding: 40px; color: #667eea;">
+            <p>Select parameters and click "Visualize" to view exchange rate data</p>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -18,16 +23,6 @@
 
     document.getElementById('to').valueAsDate = today;
     document.getElementById('from').valueAsDate = ninetyDaysAgo;
-
-    function loadVisualization(event) {
-        event.preventDefault();
-
-        const form = document.getElementById('vizForm');
-        const formData = new FormData(form);
-        const params = new URLSearchParams(formData);
-
-        document.getElementById('chartFrame').src = '/visualize?' + params.toString();
-    }
 
     window.addEventListener('load', function() {
         document.getElementById('vizForm').dispatchEvent(new Event('submit'));

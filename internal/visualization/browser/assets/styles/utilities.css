@@ -4,6 +4,22 @@
     color: var(--color-text-light);
 }
 
+.htmx-indicator {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.htmx-request .htmx-indicator {
+    display: block;
+}
+
+.htmx-request.htmx-indicator {
+    display: block;
+}
+
 .footer {
     margin-top: var(--spacing-lg);
     text-align: center;

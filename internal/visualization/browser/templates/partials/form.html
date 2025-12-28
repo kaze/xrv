@@ -1,6 +1,10 @@
 {{define "form"}}
 <div class="form-section">
-    <form id="vizForm" onsubmit="loadVisualization(event)">
+    <form id="vizForm"
+          hx-post="/htmx/chart"
+          hx-target="#chartContainer"
+          hx-swap="innerHTML"
+          hx-indicator="#loadingSpinner">
         <div class="form-grid">
             <div class="form-group">
                 <label for="base">Base Currency</label>
