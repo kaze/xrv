@@ -1,4 +1,4 @@
-package api
+package providers
 
 import (
 	"context"
@@ -10,20 +10,25 @@ import (
 	"time"
 )
 
-type APIClient interface {
-	GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*TimeSeriesResponse, error)
-	GetSupportedCurrencies(ctx context.Context) (CurrenciesResponse, error)
+type TimeSeriesResponse struct {
+	Amount    float64                       `json:"amount"`
+	Base      string                        `json:"base"`
+	StartDate string                        `json:"start_date"`
+	EndDate   string                        `json:"end_date"`
+	Rates     map[string]map[string]float64 `json:"rates"`
 }
 
-type Client struct {
+type CurrenciesResponse map[string]string
+
+type FrankfurterClient struct {
 	baseURL       string
 	timeout       time.Duration
 	retryAttempts int
 	httpClient    *http.Client
 }
 
-func NewClient(baseURL string, timeout time.Duration, retryAttempts int) *Client {
-	return &Client{
+func NewFrankfurterClient(baseURL string, timeout time.Duration, retryAttempts int) *FrankfurterClient {
+	return &FrankfurterClient{
 		baseURL:       strings.TrimSuffix(baseURL, "/"),
 		timeout:       timeout,
 		retryAttempts: retryAttempts,
@@ -33,7 +38,7 @@ func NewClient(baseURL string, timeout time.Duration, retryAttempts int) *Client
 	}
 }
 
-func (c *Client) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*TimeSeriesResponse, error) {
+func (c *FrankfurterClient) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*TimeSeriesResponse, error) {
 	startStr := startDate.Format("2006-01-02")
 	endStr := endDate.Format("2006-01-02")
 
@@ -79,7 +84,7 @@ func (c *Client) GetTimeSeriesRates(ctx context.Context, startDate, endDate time
 				URL:        url,
 			}
 			if httpResp.StatusCode >= 500 && attempt < c.retryAttempts-1 {
-				continue // Retry on server errors
+				continue
 			}
 			return nil, lastErr
 		}
@@ -102,7 +107,7 @@ func (c *Client) GetTimeSeriesRates(ctx context.Context, startDate, endDate time
 	return nil, lastErr
 }
 
-func (c *Client) GetSupportedCurrencies(ctx context.Context) (CurrenciesResponse, error) {
+func (c *FrankfurterClient) GetSupportedCurrencies(ctx context.Context) (CurrenciesResponse, error) {
 	url := fmt.Sprintf("%s/currencies", c.baseURL)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)

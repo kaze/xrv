@@ -1,6 +1,6 @@
 // +build integration
 
-package api
+package providers
 
 import (
 	"context"

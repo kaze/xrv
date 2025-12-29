@@ -9,15 +9,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/cache"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/domain"
 	"github.com/kaze/xrv/internal/statistics"
 )
 
 type APIClient interface {
-	GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*api.TimeSeriesResponse, error)
-	GetSupportedCurrencies(ctx context.Context) (api.CurrenciesResponse, error)
+	GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*providers.TimeSeriesResponse, error)
+	GetSupportedCurrencies(ctx context.Context) (providers.CurrenciesResponse, error)
 }
 
 type FetchOptions struct {
@@ -101,7 +101,7 @@ func (s *Service) CalculateStatistics(data *domain.TimeSeriesData) map[string]st
 	return result
 }
 
-func (s *Service) GetSupportedCurrencies(ctx context.Context) (api.CurrenciesResponse, error) {
+func (s *Service) GetSupportedCurrencies(ctx context.Context) (providers.CurrenciesResponse, error) {
 	return s.apiClient.GetSupportedCurrencies(ctx)
 }
 
@@ -135,7 +135,7 @@ func (s *Service) calculateTTL(endDate time.Time) time.Duration {
 	return 1 * time.Hour
 }
 
-func (s *Service) transformToTimeSeriesData(resp *api.TimeSeriesResponse, base domain.Currency, targets []domain.Currency) *domain.TimeSeriesData {
+func (s *Service) transformToTimeSeriesData(resp *providers.TimeSeriesResponse, base domain.Currency, targets []domain.Currency) *domain.TimeSeriesData {
 	data := &domain.TimeSeriesData{
 		Base:    base,
 		Targets: targets,

@@ -7,22 +7,22 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/cache"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/domain"
 	"github.com/kaze/xrv/internal/service"
 )
 
 type mockAPIClient struct {
-	timeSeriesResponse *api.TimeSeriesResponse
-	currenciesResponse api.CurrenciesResponse
+	timeSeriesResponse *providers.TimeSeriesResponse
+	currenciesResponse providers.CurrenciesResponse
 }
 
-func (m *mockAPIClient) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*api.TimeSeriesResponse, error) {
+func (m *mockAPIClient) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*providers.TimeSeriesResponse, error) {
 	return m.timeSeriesResponse, nil
 }
 
-func (m *mockAPIClient) GetSupportedCurrencies(ctx context.Context) (api.CurrenciesResponse, error) {
+func (m *mockAPIClient) GetSupportedCurrencies(ctx context.Context) (providers.CurrenciesResponse, error) {
 	return m.currenciesResponse, nil
 }
 
@@ -65,7 +65,7 @@ func TestServer_HandleIndex(t *testing.T) {
 
 func TestServer_HandleVisualize(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2023-01-01",
 			EndDate:   "2023-01-31",
@@ -111,7 +111,7 @@ func TestServer_HandleVisualize(t *testing.T) {
 
 func TestServer_HandleVisualize_WithInvert(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2023-01-01",
 			EndDate:   "2023-01-02",
@@ -146,7 +146,7 @@ func TestServer_HandleVisualize_WithInvert(t *testing.T) {
 
 func TestServer_HandleCurrencies(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		currenciesResponse: api.CurrenciesResponse{
+		currenciesResponse: providers.CurrenciesResponse{
 			"USD": "United States Dollar",
 			"EUR": "Euro",
 		},

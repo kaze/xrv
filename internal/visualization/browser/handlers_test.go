@@ -8,15 +8,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/cache"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/domain"
 	"github.com/kaze/xrv/internal/service"
 )
 
 func TestHandleChartUpdate(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2024-01-01",
 			EndDate:   "2024-01-31",
@@ -71,7 +71,7 @@ func TestHandleChartUpdate(t *testing.T) {
 
 func TestHandleChartUpdate_WithInvert(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2024-01-01",
 			EndDate:   "2024-01-02",
@@ -155,7 +155,7 @@ func TestHandleChartUpdate_MissingCurrencies(t *testing.T) {
 
 func TestHandleStatisticsRefresh(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "EUR",
 			StartDate: "2024-01-01",
 			EndDate:   "2024-01-31",
@@ -229,7 +229,7 @@ func TestInvertRates_Function(t *testing.T) {
 
 func TestHandleExportCSV(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2024-01-01",
 			EndDate:   "2024-01-02",
@@ -282,7 +282,7 @@ func TestHandleExportCSV(t *testing.T) {
 
 func TestHandleExportJSON(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2024-01-01",
 			EndDate:   "2024-01-02",

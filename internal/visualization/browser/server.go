@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/domain"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/service"
 	"github.com/kaze/xrv/internal/statistics"
 )
@@ -31,10 +31,10 @@ func init() {
 type Server struct {
 	port      int
 	svc       *service.Service
-	apiClient api.APIClient
+	apiClient providers.APIClient
 }
 
-func NewServer(port int, svc *service.Service, apiClient api.APIClient) *Server {
+func NewServer(port int, svc *service.Service, apiClient providers.APIClient) *Server {
 	if port <= 0 {
 		port = 8080
 	}

@@ -10,8 +10,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/cache"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/domain"
 	"github.com/kaze/xrv/internal/service"
 	"github.com/kaze/xrv/internal/visualization/browser"
@@ -57,7 +57,7 @@ func NewVisualizeCommand() *cobra.Command {
 }
 
 func runVisualize(cmd *cobra.Command, args []string) error {
-	apiClient := api.NewClient("https://api.frankfurter.dev/v1", 30*time.Second, 3)
+	apiClient := providers.NewFrankfurterClient("https://api.frankfurter.dev/v1", 30*time.Second, 3)
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

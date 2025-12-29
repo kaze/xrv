@@ -5,28 +5,28 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kaze/xrv/internal/api"
 	"github.com/kaze/xrv/internal/cache"
+	"github.com/kaze/xrv/internal/providers"
 	"github.com/kaze/xrv/internal/domain"
 )
 
 type mockAPIClient struct {
-	timeSeriesResponse *api.TimeSeriesResponse
-	currenciesResponse api.CurrenciesResponse
+	timeSeriesResponse *providers.TimeSeriesResponse
+	currenciesResponse providers.CurrenciesResponse
 	err                error
 }
 
-func (m *mockAPIClient) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*api.TimeSeriesResponse, error) {
+func (m *mockAPIClient) GetTimeSeriesRates(ctx context.Context, startDate, endDate time.Time, base string, targets []string) (*providers.TimeSeriesResponse, error) {
 	return m.timeSeriesResponse, m.err
 }
 
-func (m *mockAPIClient) GetSupportedCurrencies(ctx context.Context) (api.CurrenciesResponse, error) {
+func (m *mockAPIClient) GetSupportedCurrencies(ctx context.Context) (providers.CurrenciesResponse, error) {
 	return m.currenciesResponse, m.err
 }
 
 func TestService_FetchTimeSeriesData(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2023-01-01",
 			EndDate:   "2023-01-03",
@@ -83,7 +83,7 @@ func TestService_FetchTimeSeriesData(t *testing.T) {
 
 func TestService_FetchTimeSeriesData_NoCache(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		timeSeriesResponse: &api.TimeSeriesResponse{
+		timeSeriesResponse: &providers.TimeSeriesResponse{
 			Base:      "USD",
 			StartDate: "2023-01-01",
 			EndDate:   "2023-01-02",
@@ -154,7 +154,7 @@ func TestService_CalculateStatistics(t *testing.T) {
 
 func TestService_GetSupportedCurrencies(t *testing.T) {
 	mockAPI := &mockAPIClient{
-		currenciesResponse: api.CurrenciesResponse{
+		currenciesResponse: providers.CurrenciesResponse{
 			"USD": "United States Dollar",
 			"EUR": "Euro",
 			"GBP": "British Pound",

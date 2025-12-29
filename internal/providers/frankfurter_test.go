@@ -1,4 +1,4 @@
-package api
+package providers
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-func TestNewClient(t *testing.T) {
-	client := NewClient("https://api.example.com", 30*time.Second, 3)
+func TestNewFrankfurterClient(t *testing.T) {
+	client := NewFrankfurterClient("https://api.example.com", 30*time.Second, 3)
 
 	if client == nil {
-		t.Fatal("NewClient() returned nil")
+		t.Fatal("NewFrankfurterClient() returned nil")
 	}
 
 	if client.baseURL != "https://api.example.com" {
@@ -57,7 +57,7 @@ func TestGetTimeSeriesRates_Success(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(server.URL, 5*time.Second, 1)
+	client := NewFrankfurterClient(server.URL, 5*time.Second, 1)
 	ctx := context.Background()
 
 	startDate := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -98,7 +98,7 @@ func TestGetTimeSeriesRates_ServerError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(server.URL, 5*time.Second, 1)
+	client := NewFrankfurterClient(server.URL, 5*time.Second, 1)
 	ctx := context.Background()
 
 	startDate := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -136,7 +136,7 @@ func TestGetSupportedCurrencies_Success(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(server.URL, 5*time.Second, 1)
+	client := NewFrankfurterClient(server.URL, 5*time.Second, 1)
 	ctx := context.Background()
 
 	resp, err := client.GetSupportedCurrencies(ctx)
@@ -170,7 +170,7 @@ func TestGetTimeSeriesRates_InvalidJSON(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(server.URL, 5*time.Second, 1)
+	client := NewFrankfurterClient(server.URL, 5*time.Second, 1)
 	ctx := context.Background()
 
 	startDate := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -190,7 +190,7 @@ func TestGetTimeSeriesRates_ContextCancellation(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(server.URL, 5*time.Second, 1)
+	client := NewFrankfurterClient(server.URL, 5*time.Second, 1)
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel() // Cancel immediately
 
