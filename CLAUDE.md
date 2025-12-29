@@ -29,7 +29,7 @@ make test
 make coverage
 
 # Run integration tests (requires internet connection)
-go test -tags=integration ./internal/api/...
+go test -tags=integration ./internal/providers/...
 
 # Run tests for a specific package
 go test -v ./internal/service/...
@@ -70,9 +70,10 @@ The codebase follows clean architecture with clear separation of concerns:
 - No external dependencies
 - Pure Go types representing the business domain
 
-**API Layer** (`internal/api/`)
-- `Client`: HTTP client for Frankfurter API with retry logic and exponential backoff
-- Implements `APIClient` interface for testability
+**Providers Layer** (`internal/providers/`)
+- `APIClient`: Interface for exchange rate data providers
+- `FrankfurterClient`: HTTP client for Frankfurter API with retry logic and exponential backoff
+- Implements provider pattern for testability and extensibility
 - Handles two endpoints: time series rates and supported currencies
 - Default: 30s timeout, 3 retry attempts
 
@@ -197,8 +198,15 @@ When `--invert` flag is used, all rates are inverted (1/rate) to show the base c
 3. Add mode to `--output` flag options in `internal/cli/visualize.go`
 4. Add case to output mode switch in `runVisualize()`
 
-### Modifying API Endpoint
-1. Update models in `internal/api/models.go`
-2. Add/modify client method in `internal/api/client.go`
+### Modifying Provider Implementation
+1. Update models in `internal/providers/frankfurter.go`
+2. Add/modify client method in `internal/providers/frankfurter.go`
 3. Write integration test with `// +build integration` tag
 4. Update service layer to use new endpoint
+
+### Adding a New Provider
+1. Create new file `internal/providers/{provider}.go`
+2. Implement `APIClient` interface with provider-specific logic
+3. Add provider-specific response models
+4. Write unit and integration tests
+5. Update service initialization to use new provider
