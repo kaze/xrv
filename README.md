@@ -6,11 +6,16 @@ A powerful Go-based CLI application for visualizing historical exchange rates wi
 
 - **Historical Data**: Access exchange rates back to 1999 (via Frankfurter API)
 - **Multiple Currencies**: Compare multiple currency pairs simultaneously
-- **Beautiful ASCII Charts**: Clean, terminal-based visualizations
+- **Dual Visualization Modes**:
+  - Beautiful ASCII charts for terminal
+  - Interactive browser charts with go-echarts
+- **Interactive Mode**: Dynamic browser interface with form controls
+- **Export Capabilities**: Export data as CSV, JSON, or PNG
 - **Comprehensive Statistics**:
   - Basic stats (min, max, average, median)
   - Volatility metrics (standard deviation, coefficient of variation)
   - Trend analysis (direction, percentage change, moving averages)
+- **Rate Inversion**: View base currency in terms of targets
 - **Lightning Fast**: Persistent caching with BadgerDB
 - **Fully Tested**: Comprehensive test coverage with TDD approach
 
@@ -58,6 +63,25 @@ make build
 ./bin/xrv viz --base USD --currencies EUR --from "1 year ago" --height 20 --width 100
 ```
 
+### Browser visualization
+
+```bash
+# Open visualization in browser (static chart)
+./bin/xrv viz --base USD --currencies EUR --from "90 days ago" --output browser
+
+# Interactive mode with form and dynamic updates
+./bin/xrv viz --interactive
+# or
+./bin/xrv viz -i
+```
+
+### Rate inversion
+
+```bash
+# Show inverted rates (base in terms of target)
+./bin/xrv viz --base USD --currencies EUR --from "30 days ago" --invert
+```
+
 ### Disable caching
 
 ```bash
@@ -76,8 +100,12 @@ Visualize historical exchange rate data with charts and statistics.
 - `--currencies, -c`: Target currencies, comma-separated (default: EUR,GBP,JPY)
 - `--from, -f`: Start date (YYYY-MM-DD) or relative (e.g., "30 days ago", "1 year ago")
 - `--to, -t`: End date (YYYY-MM-DD), defaults to today
-- `--height`: Chart height in lines (default: 15)
-- `--width`: Chart width in characters (default: 80)
+- `--output, -o`: Output mode: terminal, browser (default: terminal)
+- `--interactive, -i`: Interactive browser mode with form
+- `--invert`: Invert rates (show base in target currency)
+- `--port`: Port for browser mode (default: 8080)
+- `--height`: Chart height in lines (default: 15, terminal mode only)
+- `--width`: Chart width in characters (default: 80, terminal mode only)
 - `--no-cache`: Disable caching and fetch fresh data
 
 ## Sample Output
@@ -119,11 +147,11 @@ xrv/
 ├── cmd/xrv/              # Application entry point
 ├── internal/
 │   ├── domain/           # Core domain models
-│   ├── api/              # Frankfurter API client
+│   ├── providers/        # Exchange rate data providers (Frankfurter)
 │   ├── cache/            # Caching layer (BadgerDB)
 │   ├── statistics/       # Statistical calculations
 │   ├── service/          # Business logic orchestration
-│   ├── visualization/    # Terminal rendering
+│   ├── visualization/    # Terminal and browser rendering
 │   └── cli/              # CLI commands (Cobra)
 └── configs/              # Configuration files
 ```
@@ -140,7 +168,7 @@ make test
 make coverage
 
 # Integration tests (requires internet)
-go test -tags=integration ./internal/api/...
+go test -tags=integration ./internal/providers/...
 ```
 
 ### Build
@@ -175,7 +203,8 @@ Cache provides significant performance improvements:
 
 - **API**: Frankfurter (ECB exchange rate data)
 - **CLI**: Cobra (command structure)
-- **Charts**: asciigraph (terminal visualization)
+- **Terminal Charts**: asciigraph (ASCII visualization)
+- **Browser Charts**: go-echarts (interactive web charts)
 - **Cache**: BadgerDB (persistent storage)
 - **Stats**: Gonum (statistical calculations)
 
@@ -184,14 +213,20 @@ Cache provides significant performance improvements:
 XRV supports 31+ currencies via the Frankfurter API, including:
 - USD, EUR, GBP, JPY, CHF, CAD, AUD, NZD, and many more!
 
+## Features Implemented
+
+- ✅ Browser-based visualization with go-echarts
+- ✅ Interactive mode with dynamic form controls
+- ✅ CSV/JSON/PNG export functionality
+- ✅ Rate inversion support
+
 ## Future Enhancements
 
-Potential improvements (not yet implemented):
+Potential improvements:
 - Interactive Bubbletea UI with keyboard navigation
-- Browser-based visualization with go-echarts
-- CSV/JSON export functionality
-- Custom cache commands
+- Custom cache management commands
 - More trend indicators (RSI, MACD, Bollinger Bands)
+- Support for additional exchange rate providers
 
 ## License
 
